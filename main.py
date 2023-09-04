@@ -23,11 +23,25 @@ def main():
     year = f"{two_weeks_ahead.year:02d}"
     string_day = two_weeks_ahead.strftime('%A')
     string_month = two_weeks_ahead.strftime('%B')
+    time.sleep(2)
     select_date(month, day)
     #reserve(month, day, year)
-    time.sleep(2)
-    select_time_slot('eid_29083', '8051', f'{string_day}, {string_month} {day}, {year}', '3:00pm', month, day, year)    
+    time.sleep(1)
+    select_time_slot('eid_29084', '8052', f'{string_day}, {string_month} {day}, {year}', '3:00pm', month, day, year)
+    input_box()
     driver.quit
+
+
+def input_box():
+    onyen = 'chriskk'
+    pw = 'CKim953145'
+    username_box = driver.find_element(By.CSS_SELECTOR, '#username')
+    username_box.send_keys(onyen)
+    time.sleep(1)
+    next_button = driver.find_element(By.CSS_SELECTOR, '.mb-3 .btn btn-unc btn-block')
+    next_button.click()
+    password_box = driver.find_element(By.CSS_SELECTOR, '#password')
+    password_box.send_keys(pw)
 
 
 def select_time_slot(row, room, date, time_slot, month, day, year):
@@ -40,22 +54,22 @@ def select_time_slot(row, room, date, time_slot, month, day, year):
     # Click on the time slot to select it
     time_slot.click()
 
-    time.sleep(1)
-    
-    drop_down = driver.find_element(By.CSS_SELECTOR, "select#bookingend_1")
+    time.sleep(3)
+
+    drop_down = driver.find_element(By.CSS_SELECTOR, 'select#bookingend_58406917')
     time.sleep(1)
     option = Select(drop_down)
     time.sleep(1)
-    option.select_by_value(f"{year}-{month}-{day} 17:30:00")
+    option.select_by_value(f'{year}-{month}-{day} 17:30:00')
     time.sleep(2)
 
-    button_element = driver.find_element(By.CSS_SELECTOR, "button#submit_times")
+    button_element = driver.find_element(By.CSS_SELECTOR, 'button#submit_times')
     button_element.click()
-    time.sleep(5)
+    time.sleep(2)
 
 
 def select_date(month, day):
-    # Locate the "Go To Date" button and click it
+    # Locate the 'Go To Date' button and click it
     go_to_date_button = driver.find_element(By.CSS_SELECTOR, '.fc-goToDate-button')
     go_to_date_button.click()
 
@@ -73,8 +87,8 @@ def select_date(month, day):
         if d.text == str(day):
             d.click()
             break
-    time.sleep(5)
+    time.sleep(2)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
    main()
