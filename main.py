@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 
 def main():
-    global driver 
+    global driver
     driver = Edge()
     driver.get("https://calendar.lib.unc.edu/reserve/davis-study-rooms")
 
@@ -20,26 +20,33 @@ def main():
     # with 0 if it is a single digit number
     month = f"{two_weeks_ahead.month:02d}"
     day = f"{two_weeks_ahead.day:02d}"
-
+    year = f"{two_weeks_ahead.year:02d}"
+    string_day = two_weeks_ahead.strftime('%A')
+    string_month = two_weeks_ahead.strftime('%B')
     select_date(month, day)
-    reserve(month, day)
+    #reserve(month, day, year)
+    time.sleep(2)
+    select_time_slot('eid_29083', '8051', f'{string_day}, {string_month} {day}, {year}', '3:00pm', month, day, year)    
     driver.quit
 
 
-def reserve(month: int, day: int):
+def select_time_slot(row, room, date, time_slot, month, day, year):
+    # Locate the row for the desired room
+    room_row = driver.find_element(By.XPATH, f"//td[@class='fc-timeline-lane fc-resource' and @data-resource-id='{row}']")
 
-    time.sleep(2)
+    # Locate the time slot within the row
+    time_slot = room_row.find_element(By.XPATH, f".//a[@class='fc-timeline-event fc-h-event fc-event fc-event-start fc-event-end fc-event-future s-lc-eq-avail' and @title='{time_slot} {date} - Room {room} - Available']")
 
-    element = driver.find_element(By.CSS_SELECTOR, "div.fc-timeline-event-harness a.fc-timeline-event")
-    element.click()
+    # Click on the time slot to select it
+    time_slot.click()
 
-    time.sleep(2)
-
+    time.sleep(1)
+    
     drop_down = driver.find_element(By.CSS_SELECTOR, "select#bookingend_1")
-    time.sleep(2)
+    time.sleep(1)
     option = Select(drop_down)
-    time.sleep(2)
-    option.select_by_value(f"2023-{month}-{day} 12:30:00")
+    time.sleep(1)
+    option.select_by_value(f"{year}-{month}-{day} 17:30:00")
     time.sleep(2)
 
     button_element = driver.find_element(By.CSS_SELECTOR, "button#submit_times")
@@ -68,5 +75,6 @@ def select_date(month, day):
             break
     time.sleep(5)
 
+
 if __name__ == "__main__":
-    main()
+   main()
