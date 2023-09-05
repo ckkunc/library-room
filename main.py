@@ -33,8 +33,8 @@ def main():
 
 
 def input_box():
-    onyen = 'chriskk'
-    pw = 'CKim953145'
+    onyen = 'onyen'
+    pw = 'pw'
     username_box = driver.find_element(By.CSS_SELECTOR, '#username')
     username_box.send_keys(onyen)
     time.sleep(1)
