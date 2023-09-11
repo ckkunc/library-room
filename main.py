@@ -1,6 +1,7 @@
 from selenium.webdriver import Edge
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import NoSuchElementException
 import time
 from datetime import datetime, timedelta
 
@@ -9,7 +10,9 @@ def main():
     global driver
     driver = Edge()
     driver.get("https://calendar.lib.unc.edu/reserve/davis-study-rooms")
-
+    row_id = ['eid_29084', 'eid_29083', 'eid_29082', 'eid_29081', 'eid_29080', 'eid_29079']
+    room_num = ['8052', '8051', '8049', '8048', '8047', '8046']
+    
     # Get the current date
     current_date = datetime.now().date()
 
@@ -27,7 +30,13 @@ def main():
     select_date(month, day)
     #reserve(month, day, year)
     time.sleep(1)
-    select_time_slot('eid_29084', '8052', f'{string_day}, {string_month} {day}, {year}', '3:00pm', month, day, year)
+
+    for row_id, room_num in zip(row_id, room_num):
+        try:
+            select_time_slot(row_id, room_num, f'{string_day}, {string_month} {day}, {year}', '3:00pm', month, day, year)
+            break  # If the function call was successful, break the loop
+        except NoSuchElementException:
+            continue  # If a NoSuchElementException was raised, continue with the next iteration
     input_box()
     driver.quit
 
@@ -38,7 +47,7 @@ def input_box():
     username_box = driver.find_element(By.CSS_SELECTOR, '#username')
     username_box.send_keys(onyen)
     time.sleep(1)
-    next_button = driver.find_element(By.CSS_SELECTOR, '.mb-3 .btn btn-unc btn-block')
+    next_button = driver.find_element(By.CSS_SELECTOR, '#nextBtn')
     next_button.click()
     password_box = driver.find_element(By.CSS_SELECTOR, '#password')
     password_box.send_keys(pw)
@@ -55,8 +64,12 @@ def select_time_slot(row, room, date, time_slot, month, day, year):
     time_slot.click()
 
     time.sleep(3)
-
-    drop_down = driver.find_element(By.CSS_SELECTOR, 'select#bookingend_58406917')
+    
+    # If the dropdown menu's ID isn't 58406914, try finding the menu with ID 1
+    try:
+        drop_down = driver.find_element(By.CSS_SELECTOR, 'select#bookingend_58406917')
+    except NoSuchElementException:
+        drop_down = driver.find_element(By.CSS_SELECTOR, 'select#bookingend_1')
     time.sleep(1)
     option = Select(drop_down)
     time.sleep(1)
