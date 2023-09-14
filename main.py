@@ -1,9 +1,10 @@
 from selenium.webdriver import Edge
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
-import time
+from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import NoSuchElementException
+import time, os
+from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
 
@@ -42,8 +43,9 @@ def main():
 
 
 def input_box():
-    onyen = 'chriskk'
-    pw = 'CKim10611520!'
+    load_dotenv()
+    onyen = os.getenv('ONYEN')
+    pw = os.getenv('PW')
     username_box = driver.find_element(By.CSS_SELECTOR, '#username')
     username_box.send_keys(onyen)
     time.sleep(1)
