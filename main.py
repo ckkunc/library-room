@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
-import time, os
+import time, os, sys
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
@@ -18,6 +18,12 @@ def main():
     # Get the current date
     current_date = datetime.now().date()
 
+    # Get the day of the week (0 is Monday, 6 is Sunday)
+    current_day = current_date.weekday()
+
+    if current_day in [5, 6]:  # If it's Saturday or Sunday
+        print("It's the weekend, no need to book a room")
+        sys.exit()
     # Calculate the date one week ahead
     two_weeks_ahead = current_date + timedelta(weeks=2)
 
